@@ -2,15 +2,22 @@ const Chat = require("../schema/Chat.js")
 const { findUser } = require("../schema/User.js")
 const RESPONSE_LIMIT = 10
 const RESPONSE_LIMIT_OLD = 5
-const RESPONSE_TIMEOUT = 3000 // MS
 const pendingReqRes = []
 
 exports.readMessage = async (req, res) => {
   try {
-    if (req.headers.instant !== "1") {
-      return pendingReqRes.push({ req, res, time: Date.now() }), console.log(pendingReqRes.length)
-    }
+    pendingReqRes.push({ req, res, time: Date.now() })
+    console.log(pendingReqRes.length)
+  } catch (error) {
+    res.status(404).json({
+      status: "fail",
+      message: error.message,
+    })
+  }
+}
 
+exports.readLastMessage = async (req, res) => {
+  try {
     const data = await Chat.find().sort({ _id: -1 }).limit(RESPONSE_LIMIT)
 
     data.forEach((msg) => {
@@ -19,7 +26,6 @@ exports.readMessage = async (req, res) => {
 
     if (!data.length) throw new Error("No message found")
 
-    // end: send reesponse
     res.status(200).json({
       status: "success",
       data,
@@ -44,7 +50,6 @@ exports.readMessageById = async (req, res) => {
 
     if (!data.length) throw new Error("No message found")
 
-    // end: send reesponse
     res.status(200).json({
       status: "success",
       data,
