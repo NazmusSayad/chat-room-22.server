@@ -8,7 +8,10 @@ const Schema = new mongoose.Schema(
       required: [true, "Message feild missing"],
       trim: true,
     },
-    email: User.schema.obj.email,
+    email: {
+      ...User.schema.obj.email,
+      unique: false,
+    },
     sent: {
       type: Date,
       required: true,
