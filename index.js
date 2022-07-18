@@ -1,24 +1,26 @@
 console.clear()
+require("dotenv").config()
 const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 const router = require("./router.js")
 const User = require("./schema/User.js")
+const { API_URL } = require("./CONFIG.js")
+const { getMatchedUser } = require("./routes/user.js")
 const app = express()
 
 app.use(cors())
 app.use(express.json())
-app.use((req, res, next) => {
+app.use(API_URL, (req, res, next) => {
   try {
-    // Skip when SignUp/Login
-    if (req.url.startsWith("/v1/api/user")) return next()
+    if (req.url.startsWith("/user")) return next()
 
-    const user = User.findUser(req.headers.email)
-    if (user && user.password === req.headers.password) {
-      return next()
-    }
+    getMatchedUser({
+      email: req?.headers?.email,
+      password: req?.headers?.password,
+    })
 
-    throw new Error("Something went wrong!")
+    next()
   } catch (error) {
     res.status(404).json({
       status: "fail",
@@ -26,7 +28,7 @@ app.use((req, res, next) => {
     })
   }
 })
-app.use("/v1/api", router)
+app.use(API_URL, router)
 
 // Connect With DataBase
 if (!process.env.DATABASE_URL) {

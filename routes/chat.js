@@ -19,7 +19,6 @@ exports.readMessage = async (req, res) => {
 exports.readLastMessage = async (req, res) => {
   try {
     const data = await Chat.find().sort({ _id: -1 }).limit(RESPONSE_LIMIT)
-
     data.forEach((msg) => {
       msg._doc.name = findUser(msg.email).name
     })
@@ -43,7 +42,6 @@ exports.readMessageById = async (req, res) => {
     const data = await Chat.find({ _id: { $lt: req.params.id } })
       .limit(RESPONSE_LIMIT_OLD)
       .sort({ _id: -1 })
-
     data.forEach((msg) => {
       msg._doc.name = findUser(msg.email).name
     })

@@ -1,4 +1,6 @@
 const mongoose = require("mongoose")
+const User = require("./User.js")
+
 const Schema = new mongoose.Schema(
   {
     msg: {
@@ -6,13 +8,10 @@ const Schema = new mongoose.Schema(
       required: [true, "Message feild missing"],
       trim: true,
     },
-    email: {
-      type: String,
-      required: [true, "User feild missing"],
-      trim: true,
-    },
+    email: User.schema.obj.email,
     sent: {
       type: Date,
+      required: true,
     },
   },
   {
