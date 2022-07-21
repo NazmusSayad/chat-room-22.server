@@ -43,4 +43,25 @@ const writeMessage = async (email, msg) => {
   return data
 }
 
-module.exports = { getLastMessages, getOlderMessagesThanId, getNewerMessagesThanId, writeMessage }
+const writeMessages = async (email, msgs) => {
+  const userName = findUser(data.email).name
+  const list = msgs.map((msg) => {
+    return { sent: new Date(), email, msg }
+  })
+
+  const data = await Model.create(list)
+
+  data.forEach((single) => {
+    single._doc.name = userName
+  })
+
+  return data
+}
+
+module.exports = {
+  getLastMessages,
+  getOlderMessagesThanId,
+  getNewerMessagesThanId,
+  writeMessage,
+  writeMessages,
+}
