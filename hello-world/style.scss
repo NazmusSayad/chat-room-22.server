@@ -4,9 +4,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-user-drag: none;
 }
 
 body {
+  user-select: none;
   font-family: "Rubik", sans-serif;
   background: #181818;
   color: ghostwhite;
@@ -15,6 +17,7 @@ body {
   justify-content: center;
   flex-direction: column;
   min-height: 90vh;
+  cursor: pointer;
 }
 
 h1 {
