@@ -55,7 +55,7 @@ model.find((err, users) => {
     USER_LIST[user.email.toLowerCase()] = USER_LIST[user._id]
   })
 
-  console.log("Users loaded!")
+  console.log(">>> User list loaded...")
 })
 
 module.exports = model

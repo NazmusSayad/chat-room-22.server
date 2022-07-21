@@ -5,4 +5,4 @@ if (!process.env.DATABASE_URL) {
 
 mongoose
   .connect(process.env.DATABASE_URL)
-  .then(() => console.log("MongoDB connected successfully..."))
+  .then(() => console.log(">>> MongoDB connected successfully..."))
