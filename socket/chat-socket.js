@@ -11,8 +11,6 @@ module.exports = async function (socket) {
 
     const initialMessages = await Chat.getLastMessages()
     io.to(socket.id).emit("message-initial", initialMessages)
-    console.log("initialMessages sent to " + user.email)
-    // console.log(socket)
 
     socket.on("message-getOlder", async (id, respond) => {
       const data = await Chat.getOlderMessagesThanId(id)
@@ -26,8 +24,6 @@ module.exports = async function (socket) {
     })
 
     socket.on("message-new", async (msg, respond) => {
-      console.log(msg)
-
       const data = await Chat.writeMessage(user.email, msg)
       socket.broadcast.emit("message-new", data)
       respond(data)
@@ -39,7 +35,6 @@ module.exports = async function (socket) {
     socket.on("disconnect", () => {}) 
     */
   } catch (err) {
-    console.log(err)
     socket.emit("error", err.message)
     socket.disconnect()
   }
