@@ -1,6 +1,6 @@
 console.clear()
 require("dotenv").config()
-const { server } = require("./server")
+const { server } = require("./server.js")
 
 // Connect with database!
 const mongoose = require("mongoose")
