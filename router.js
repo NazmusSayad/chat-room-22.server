@@ -4,6 +4,7 @@ const app = require("./app.js")
 const { API_URL } = require("./.config.js")
 const { readMessage, writeMessage, readMessageById, readLastMessage } = require("./routes/chat.js")
 const { checkUser, createUser } = require("./routes/user.js")
+const { getMatchedUser } = require("./user/user.js")
 
 const router = express.Router()
 router.route("/user").get(checkUser).post(createUser)
