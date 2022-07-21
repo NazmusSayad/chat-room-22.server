@@ -32,6 +32,11 @@ h1 {
   font-weight: 500;
 }
 
+@media (max-width: 37.5rem) {
+  h1 {
+    font-size: 5.625rem;
+  }
+}
 p {
   color: darkgray;
 }
