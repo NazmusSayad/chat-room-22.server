@@ -1,31 +1,8 @@
-const User = require("../schema/User.js")
-
-const getMatchedUser = ({ email, password }) => {
-  if (!email || !password) throw new Error("Wrong input!")
-
-  const userMatch = User.findUser(email)
-  if (!userMatch) {
-    throw new Error("No account associated with this email.")
-  }
-
-  const passwordMatch = userMatch?.password === password
-  if (!passwordMatch) {
-    throw new Error("Wrong password!")
-  }
-
-  if (userMatch && passwordMatch) {
-    return userMatch
-  }
-
-  throw new Error("Something went wrong!")
-}
+const model = require("../user/user.js")
 
 const checkUser = (req, res) => {
   try {
-    const data = getMatchedUser({
-      email: req?.headers?.email,
-      password: req?.headers?.password,
-    })
+    const data = model.getMatchedUser(req?.headers?.email, req?.headers?.password)
 
     res.status(200).json({
       status: "success",
@@ -41,8 +18,7 @@ const checkUser = (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    req.body.email = req.body.email.toLowerCase()
-    const data = await User.createUser(req.body)
+    const data = await model.newUser(req.body)
 
     res.status(200).json({
       status: "success",
@@ -60,4 +36,4 @@ const createUser = async (req, res) => {
   }
 }
 
-module.exports = { getMatchedUser, checkUser, createUser }
+module.exports = { checkUser, createUser }

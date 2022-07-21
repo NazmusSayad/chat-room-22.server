@@ -1,5 +1,5 @@
+const emailSchema = require("../user/Schema.js").schema.obj.email
 const mongoose = require("mongoose")
-const User = require("./User.js")
 
 const Schema = new mongoose.Schema(
   {
@@ -9,7 +9,7 @@ const Schema = new mongoose.Schema(
       trim: true,
     },
     email: {
-      ...User.schema.obj.email,
+      ...emailSchema,
       unique: false,
     },
     sent: {

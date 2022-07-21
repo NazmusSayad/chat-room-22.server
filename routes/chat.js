@@ -1,13 +1,9 @@
-const Chat = require("../schema/Chat.js")
-const { findUser } = require("../schema/User.js")
-const RESPONSE_LIMIT = 10
-const RESPONSE_LIMIT_OLD = 5
+const model = require("../chat/chat.js")
 const pendingReqRes = []
 
 exports.readMessage = async (req, res) => {
   try {
     pendingReqRes.push({ req, res, time: Date.now() })
-    console.log(pendingReqRes.length)
   } catch (error) {
     res.status(404).json({
       status: "fail",
@@ -18,11 +14,7 @@ exports.readMessage = async (req, res) => {
 
 exports.readLastMessage = async (req, res) => {
   try {
-    const data = await Chat.find().sort({ _id: -1 }).limit(RESPONSE_LIMIT)
-    data.forEach((msg) => {
-      msg._doc.name = findUser(msg.email).name
-    })
-
+    const data = await model.getLastMessages()
     if (!data.length) throw new Error("No message found")
 
     res.status(200).json({
@@ -39,13 +31,7 @@ exports.readLastMessage = async (req, res) => {
 
 exports.readMessageById = async (req, res) => {
   try {
-    const data = await Chat.find({ _id: { $lt: req.params.id } })
-      .limit(RESPONSE_LIMIT_OLD)
-      .sort({ _id: -1 })
-    data.forEach((msg) => {
-      msg._doc.name = findUser(msg.email).name
-    })
-
+    const data = await model.getOldMessageThanId(req.params.id)
     if (!data.length) throw new Error("No message found")
 
     res.status(200).json({
@@ -62,12 +48,7 @@ exports.readMessageById = async (req, res) => {
 
 exports.writeMessage = async (req, res) => {
   try {
-    const data = await Chat.create({
-      sent: new Date(),
-      email: req.headers.email,
-      msg: req.body.msg,
-    })
-    data._doc.name = findUser(data.email).name
+    const data = await model.writeMessage(req.headers.email, req.body.msg)
 
     const operatorList = [...pendingReqRes]
     pendingReqRes.length = 0

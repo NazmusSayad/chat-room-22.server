@@ -53,6 +53,7 @@ _model.find((err, users) => {
   users.forEach((user) => {
     USER_LIST[user.email.toLowerCase()] = user
   })
+  console.log("Users loaded!")
 })
 
 module.exports = _model
