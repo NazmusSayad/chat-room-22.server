@@ -1,8 +1,8 @@
-const Schema = require("./Schema.js")
+const Model = require("./Schema.js")
 
 const newUser = async (body) => {
   body.email = body.email.toLowerCase()
-  const data = await Schema.createUser(body)
+  const data = await Model.createUser(body)
   return data
 }
 
@@ -11,7 +11,7 @@ const getMatchedUser = (email, password) => {
 
   if (!email || !password) throw new Error("Wrong input!")
 
-  const userMatch = Schema.findUser(email)
+  const userMatch = Model.findUser(email)
   if (!userMatch) {
     throw new Error("No account associated with this email.")
   }

@@ -1,4 +1,6 @@
 const mongoose = require("mongoose")
+
+const USER_LIST = {}
 const Schema = new mongoose.Schema(
   {
     name: {
@@ -33,13 +35,11 @@ const Schema = new mongoose.Schema(
   }
 )
 
-const USER_LIST = {}
-
 // Add new model methods
-const _model = mongoose.model("User", Schema)
-_model.findUser = (email) => USER_LIST[email.toLowerCase()]
-_model.createUser = async (info) => {
-  const data = await _model.create({
+const model = mongoose.model("User", Schema)
+model.findUser = (query) => USER_LIST[query.toLowerCase()]
+model.createUser = async (info) => {
+  const data = await model.create({
     dateJoin: new Date(),
     ...info,
   })
@@ -49,12 +49,13 @@ _model.createUser = async (info) => {
 }
 
 // Recieve old data and save
-_model.find((err, users) => {
+model.find((err, users) => {
   users.forEach((user) => {
-    USER_LIST[user.email.toLowerCase()] = user
+    USER_LIST[user._id] = user
+    USER_LIST[user.email.toLowerCase()] = USER_LIST[user._id]
   })
 
   console.log("Users loaded!")
 })
 
-module.exports = _model
+module.exports = model

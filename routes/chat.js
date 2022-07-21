@@ -1,4 +1,4 @@
-const model = require("../chat/chat.js")
+const Chat = require("../chat/chat.js")
 const pendingReqRes = []
 
 exports.readMessage = async (req, res) => {
@@ -14,7 +14,7 @@ exports.readMessage = async (req, res) => {
 
 exports.readLastMessage = async (req, res) => {
   try {
-    const data = await model.getLastMessages()
+    const data = await Chat.getLastMessages()
     if (!data.length) throw new Error("No message found")
 
     res.status(200).json({
@@ -31,7 +31,7 @@ exports.readLastMessage = async (req, res) => {
 
 exports.readMessageById = async (req, res) => {
   try {
-    const data = await model.getOlderMessagesThanId(req.params.id)
+    const data = await Chat.getOlderMessagesThanId(req.params.id)
     if (!data.length) throw new Error("No message found")
 
     res.status(200).json({
@@ -48,7 +48,7 @@ exports.readMessageById = async (req, res) => {
 
 exports.writeMessage = async (req, res) => {
   try {
-    const data = await model.writeMessage(req.headers.email, req.body.msg)
+    const data = await Chat.writeMessage(req.headers.email, req.body.msg)
 
     const operatorList = [...pendingReqRes]
     pendingReqRes.length = 0
@@ -75,3 +75,5 @@ exports.writeMessage = async (req, res) => {
     })
   }
 }
+
+throw new Error("I am not in service!")

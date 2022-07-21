@@ -1,39 +1,64 @@
-const model = require("../user/user.js")
+const { findUser } = require("../user/Schema.js")
+const User = require("../user/user.js")
+const HelloWorld = require("../hello-world")
 
-const checkUser = (req, res) => {
+const getUserPublicInfo = (req, res) => {
   try {
-    const data = model.getMatchedUser(req?.headers?.email, req?.headers?.password)
+    const query = req.params.id
+    if (!query) throw new Error("Invalid query")
+
+    const data = findUser(query)
+    if (!data) throw new Error("No account associated with this query.")
 
     res.status(200).json({
       status: "success",
       data,
     })
-  } catch (error) {
+  } catch (err) {
     res.status(404).json({
       status: "fail",
-      message: error.message,
+      message: err.message,
+    })
+  }
+}
+
+const checkUser = (req, res) => {
+  try {
+    const { email, password } = req?.headers
+    if (!email || !password) return HelloWorld(res)
+
+    const data = User.getMatchedUser(email, password)
+
+    res.status(200).json({
+      status: "success",
+      data,
+    })
+  } catch (err) {
+    res.status(404).json({
+      status: "fail",
+      message: err.message,
     })
   }
 }
 
 const createUser = async (req, res) => {
   try {
-    const data = await model.newUser(req.body)
+    const data = await User.newUser(req.body)
 
     res.status(200).json({
       status: "success",
       data,
     })
-  } catch (error) {
-    if (error.code === 11000) {
-      error.message = "Another account associeted with this email."
+  } catch (err) {
+    if (err.code === 11000) {
+      err.message = "Another account associeted with this email."
     }
 
     res.status(404).json({
       status: "fail",
-      message: error.message,
+      message: err.message,
     })
   }
 }
 
-module.exports = { checkUser, createUser }
+module.exports = { checkUser, createUser, getUserPublicInfo }
