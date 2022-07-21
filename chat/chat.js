@@ -12,10 +12,19 @@ const getLastMessages = async () => {
   return data
 }
 
-const getOldMessageThanId = async (id) => {
+const getOlderMessagesThanId = async (id) => {
   const data = await Schema.find({ _id: { $lt: id } })
     .limit(RESPONSE_LIMIT_OLD)
     .sort({ _id: -1 })
+  data.forEach((msg) => {
+    msg._doc.name = findUser(msg.email).name
+  })
+
+  return data
+}
+
+const getNewerMessagesThanId = async (id) => {
+  const data = await Schema.find({ _id: { $gt: id } }).sort({ _id: 1 })
   data.forEach((msg) => {
     msg._doc.name = findUser(msg.email).name
   })
@@ -34,4 +43,4 @@ const writeMessage = async (email, msg) => {
   return data
 }
 
-module.exports = { getLastMessages, getOldMessageThanId, writeMessage }
+module.exports = { getLastMessages, getOlderMessagesThanId, getNewerMessagesThanId, writeMessage }

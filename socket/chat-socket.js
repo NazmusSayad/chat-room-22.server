@@ -4,14 +4,24 @@ const User = require("../user/user.js")
 module.exports = async function (socket) {
   try {
     const io = this
-    const { email, password } = socket?.handshake?.auth
-    const user = User.getMatchedUser(email, password)
+    const user = User.getMatchedUser(
+      socket?.handshake?.auth?.email,
+      socket?.handshake?.auth?.password
+    )
 
     const initialMessages = await Chat.getLastMessages()
     io.to(socket.id).emit("message-initial", initialMessages)
+    console.log("initialMessages sent to " + user.email)
+    // console.log(socket)
 
-    socket.on("message-loadmore", async (id, respond) => {
-      const data = await Chat.getOldMessageThanId(id)
+    socket.on("message-getOlder", async (id, respond) => {
+      const data = await Chat.getOlderMessagesThanId(id)
+      respond(data)
+    })
+
+    socket.on("message-getNewer", async (id, respond) => {
+      const data = await Chat.getNewerMessagesThanId(id)
+      if (data.length > 100) return respond(data.length)
       respond(data)
     })
 
@@ -29,6 +39,7 @@ module.exports = async function (socket) {
     socket.on("disconnect", () => {}) 
     */
   } catch (err) {
+    console.log(err)
     socket.emit("error", err.message)
     socket.disconnect()
   }

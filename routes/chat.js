@@ -31,7 +31,7 @@ exports.readLastMessage = async (req, res) => {
 
 exports.readMessageById = async (req, res) => {
   try {
-    const data = await model.getOldMessageThanId(req.params.id)
+    const data = await model.getOlderMessagesThanId(req.params.id)
     if (!data.length) throw new Error("No message found")
 
     res.status(200).json({
