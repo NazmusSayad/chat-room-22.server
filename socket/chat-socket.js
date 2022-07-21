@@ -8,19 +8,19 @@ module.exports = async function (socket) {
     const user = User.getMatchedUser(email, password)
 
     // 1. Send most recent messages to client.
-    io.to(socket.id).emit("message-recent", JSON.stringify(await Chat.getLastMessages()))
+    const starterMessages = await Chat.getLastMessages()
+    io.to(socket.id).emit("message-initial", starterMessages)
+    console.log(starterMessages)
 
     socket.on("message-loadmore", async (id, respond) => {
-      const res = await Chat.getOldMessageThanId(id)
-      const resString = JSON.stringify(res)
-      respond(resString)
+      const data = await Chat.getOldMessageThanId(id)
+      respond(data)
     })
 
     socket.on("message-new", async (msg, respond) => {
-      const res = await Chat.writeMessage(user.email, msg)
-      const resString = JSON.stringify(res)
-      socket.broadcast.emit("message-new", resString)
-      respond(resString)
+      const data = await Chat.writeMessage(user.email, msg)
+      socket.broadcast.emit("message-new", data)
+      respond(data)
     })
 
     /* 
