@@ -3,11 +3,11 @@ const express = require("express")
 const app = require("./app.js")
 const HelloWorld = require("./hello-world")
 const { API_URL } = require("./.config.js")
-const route = require("./routes/user.js")
+const route = require("./routes/user-route.js")
 
 /*
-const { readMessage, writeMessage, readMessageById, readLastMessage } = require("./routes/chat.js")
-const { getMatchedUser } = require("./user/user.js")
+const { readMessage, writeMessage, readMessageById, readLastMessage } = require("./routes/chat-route.js")
+const { getMatchedUser } = require("./model/User.js")
 */
 
 const router = express.Router()

@@ -1,4 +1,4 @@
-const Model = require("./Schema.js")
+const Model = require("./schema/user-schema.js")
 
 const newUser = async (body) => {
   body.email = body.email.toLowerCase()

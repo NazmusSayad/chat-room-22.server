@@ -1,4 +1,4 @@
-const emailSchema = require("../user/Schema.js").schema.obj.email
+const emailSchema = require("./user-schema.js").schema.obj.email
 const mongoose = require("mongoose")
 
 const Schema = new mongoose.Schema(

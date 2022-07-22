@@ -1,4 +1,4 @@
-const Chat = require("../chat/chat.js")
+const Chat = require("../model/Chat.js")
 const pendingReqRes = []
 
 exports.readMessage = async (req, res) => {

@@ -1,5 +1,5 @@
-const Model = require("./Schema.js")
-const { findUser } = require("../user/Schema.js")
+const Model = require("./schema/chat-schema.js")
+const { findUser } = require("./schema/user-schema.js")
 const { RESPONSE_LIMIT, RESPONSE_LIMIT_OLD } = require("../.config.js")
 
 const getLastMessages = async () => {

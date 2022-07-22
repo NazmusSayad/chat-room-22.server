@@ -1,5 +1,5 @@
-const { findUser } = require("../user/Schema.js")
-const User = require("../user/user.js")
+const { findUser } = require("../model/schema/user-schema.js")
+const User = require("../model/User.js")
 const HelloWorld = require("../hello-world")
 
 const getUserPublicInfo = (req, res) => {
