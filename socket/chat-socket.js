@@ -2,6 +2,8 @@ const Chat = require("../model/Chat.js")
 const User = require("../model/User.js")
 
 module.exports = async function (socket) {
+  console.log(socket.handshake.query)
+
   try {
     const user = User.getMatchedUser(
       socket?.handshake?.auth?.email,
@@ -41,7 +43,7 @@ module.exports = async function (socket) {
     socket.on("message-delete", async (data, respond) => {})
     */
     socket.on("disconnect", () => {
-      console.log(socket)
+      // console.log(socket)
     })
   } catch (err) {
     console.log(err)
