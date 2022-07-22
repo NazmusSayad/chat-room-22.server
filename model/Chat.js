@@ -32,18 +32,7 @@ const getNewerMessagesThanId = async (id) => {
   return data
 }
 
-const writeMessage = async (email, msg) => {
-  const data = await Model.create({
-    sent: new Date(),
-    email,
-    msg,
-  })
-
-  data._doc.name = findUser(data.email).name
-  return data
-}
-
-const writeMessages = async (email, msgs) => {
+const writeMessage = async (email, msgs) => {
   const userName = findUser(email).name
 
   const list = msgs.map((msg) => {
@@ -63,5 +52,4 @@ module.exports = {
   getOlderMessagesThanId,
   getNewerMessagesThanId,
   writeMessage,
-  writeMessages,
 }

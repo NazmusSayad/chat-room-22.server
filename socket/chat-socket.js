@@ -26,15 +26,9 @@ module.exports = async function (socket) {
       respond(data)
     })
 
-    socket.on("message-new", async (msg, respond) => {
-      const data = await Chat.writeMessage(user.email, msg)
+    socket.on("message-new", async (msgs, respond) => {
+      const data = await Chat.writeMessage(user.email, msgs)
       socket.broadcast.emit("message-new", data)
-      respond(data)
-    })
-
-    socket.on("messages-new", async (msgs, respond) => {
-      const data = await Chat.writeMessages(user.email, msgs)
-      socket.broadcast.emit("messages-new", data)
       respond(data)
     })
 
