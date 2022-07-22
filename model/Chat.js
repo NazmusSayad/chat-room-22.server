@@ -38,19 +38,19 @@ const writeMessage = async (email, msg) => {
     email,
     msg,
   })
-  data._doc.name = findUser(data.email).name
 
+  data._doc.name = findUser(data.email).name
   return data
 }
 
 const writeMessages = async (email, msgs) => {
-  const userName = findUser(data.email).name
+  const userName = findUser(email).name
+
   const list = msgs.map((msg) => {
     return { sent: new Date(), email, msg }
   })
 
   const data = await Model.create(list)
-
   data.forEach((single) => {
     single._doc.name = userName
   })

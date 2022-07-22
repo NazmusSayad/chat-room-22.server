@@ -1,7 +1,10 @@
 const Chat = require("../model/Chat.js")
 const User = require("../model/User.js")
+const { Wait } = require("../utils.js")
 
 module.exports = async function (socket) {
+  await Wait(4000)
+
   try {
     const io = this
     const user = User.getMatchedUser(
@@ -30,8 +33,6 @@ module.exports = async function (socket) {
     })
 
     socket.on("messages-new", async (msgs, respond) => {
-      console.log("I got something")
-
       const data = await Chat.writeMessages(user.email, msgs)
       socket.broadcast.emit("message-new", data)
       respond(data)
