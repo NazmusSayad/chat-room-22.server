@@ -21,6 +21,7 @@ module.exports = async function (socket) {
     })
 
     socket.on("message-getNewer", async (id, respond) => {
+      console.log('Finally I got called!')
       const data = await Chat.getNewerMessagesThanId(id)
       if (data.length > 100) return respond(data.length)
       respond(data)
