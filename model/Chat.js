@@ -33,8 +33,6 @@ const getNewerMessagesThanId = async (id) => {
 }
 
 const writeMessage = async (email, msgs) => {
-  throw new Error('Testing!')
-  
   const userName = findUser(email).name
 
   const list = msgs.map((msg) => {

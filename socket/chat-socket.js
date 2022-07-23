@@ -1,67 +1,81 @@
 const Chat = require("../model/Chat.js")
 const User = require("../model/User.js")
 
-const sendInitialMessages = async (respond) => {
-  try {
-    const data = await Chat.getLastMessages()
-    respond(data)
-  } catch (err) {
-    throw err
+module.exports = class Client {
+  #io = null
+  #socket = null
+  #user = {
+    _id: null,
+    name: null,
+    email: null,
+    password: null,
+    dateJoin: null,
   }
-}
 
-const getOlderMessagesThanId = async (id, respond) => {
-  try {
-    const data = await Chat.getOlderMessagesThanId(id)
-    respond(data)
-  } catch (err) {
-    throw err
+  constructor(io, socket) {
+    this.#io = io
+    this.#socket = socket
+
+    try {
+      this.#user = User.getMatchedUser(
+        socket?.handshake?.auth?.email,
+        socket?.handshake?.auth?.password
+      )
+
+      console.log(`---> Connected with "${this.#user.email}" from "${socket.handshake.address}"`)
+
+      socket.on("message-initial", this.#sendInitialMessages)
+      socket.on("message-getOlder", this.#getOlderMessagesThanId)
+      socket.on("message-getNewer", this.#getNewerMessagesThanId)
+      socket.on("message-new", this.#writeNewMessage)
+      socket.on("disconnect", this.#onDisconnect)
+    } catch (err) {
+      this.#disconnect()
+    }
   }
-}
 
-const getNewerMessagesThanId = async (id, respond) => {
-  try {
-    const data = await Chat.getNewerMessagesThanId(id)
-    if (data.length > 100) return respond(data.length)
-    respond(data)
-  } catch (err) {
-    throw err
+  #sendInitialMessages = async (respond) => {
+    try {
+      const data = await Chat.getLastMessages()
+      respond(data)
+    } catch (err) {
+      this.#disconnect(err)
+    }
   }
-}
 
-const writeNewMessage = async function (msgs, respond) {
-  try {
-    const data = await Chat.writeMessage(this.email, msgs)
-    socket.broadcast.emit("message-new", data)
-    respond(data)
-  } catch (err) {
-    throw err
+  #getOlderMessagesThanId = async (id, respond) => {
+    try {
+      const data = await Chat.getOlderMessagesThanId(id)
+      respond(data)
+    } catch (err) {
+      this.#disconnect(err)
+    }
   }
-}
 
-const onDisconnect = () => {}
-
-module.exports = async function (socket) {
-  try {
-    const user = User.getMatchedUser(
-      socket?.handshake?.auth?.email,
-      socket?.handshake?.auth?.password
-    )
-
-    console.log(`---> Connected with "${user.email}"`)
-
-    socket.on("message-initial", sendInitialMessages.bind(user))
-    socket.on("message-getOlder", getOlderMessagesThanId.bind(user))
-    socket.on("message-getNewer", getNewerMessagesThanId.bind(user))
-    socket.on("message-new", writeNewMessage.bind(user))
-    socket.on("disconnect", onDisconnect)
-
-    /* 
-    socket.on("message-edit", async (data, respond) => {})
-    socket.on("message-delete", async (data, respond) => {})
-    */
-  } catch (err) {
-    socket.emit("error", err.message)
-    socket.disconnect()
+  #getNewerMessagesThanId = async (id, respond) => {
+    try {
+      const data = await Chat.getNewerMessagesThanId(id)
+      if (data.length > 100) return respond(data.length)
+      respond(data)
+    } catch (err) {
+      this.#disconnect(err)
+    }
   }
+
+  #writeNewMessage = async (msgs, respond) => {
+    try {
+      const data = await Chat.writeMessage(this.#user.email, msgs)
+      this.#socket.broadcast.emit("message-new", data)
+      respond(data)
+    } catch (err) {
+      this.#disconnect(err)
+    }
+  }
+
+  #disconnect = async (err = new Error("Something went wrong!")) => {
+    this.#socket.emit("error", err.message)
+    this.#socket.disconnect()
+  }
+
+  #onDisconnect = async () => {}
 }
