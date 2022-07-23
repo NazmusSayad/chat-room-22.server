@@ -74,7 +74,7 @@ module.exports = class Client {
 
   #disconnect = async (err = new Error("Something went wrong!")) => {
     this.#socket.emit("error", err.message)
-    this.#socket.disconnect()
+    this.#socket.disconnect(true)
   }
 
   #onDisconnect = async () => {}
