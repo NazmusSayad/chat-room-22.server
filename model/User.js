@@ -31,13 +31,13 @@ const getMatchedUser = (email, password) => {
 const getUserName = (email) => Schema.findUser(email)?.name
 
 const waitForUserLoading = () =>
-  new Promise((resolve, reject) => {
+  new Promise((resolve) => {
     const interval = setInterval(() => {
       if (Schema._userListLoaded) {
         resolve(null)
         clearInterval(interval)
       }
-    }, 250)
+    }, 50)
   })
 
 module.exports = {

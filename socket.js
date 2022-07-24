@@ -7,7 +7,7 @@ io.on("connection", (socket) => socket.disconnect())
 
 const chatIo = io.of(API_URL + "/chat")
 chatIo.on("connection", async (socket) => {
-  // if (!User.userLoaded) await User.waitForUserLoading()
+  if (!User.userLoaded) await User.waitForUserLoading()
 
   try {
     const user = User.getMatchedUser(
