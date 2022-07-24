@@ -60,10 +60,11 @@ model.find((err, users) => {
 })
 
 module.exports = model
-;(async () => {
+
+setTimeout(async () => {
   console.log("Find Started!")
   const start = Date.now()
   const data = await model.find({ email: "247sayad@gmail.com" })
   console.log("it tooks: " + (Date.now() - start))
   console.log(data)
-})()
+}, 5000)
