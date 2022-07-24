@@ -67,4 +67,4 @@ setTimeout(async () => {
   const data = await model.find({ email: "247sayad@gmail.com" })
   console.log("it tooks: " + (Date.now() - start))
   console.log(data)
-}, 5000)
+}, 10000)
