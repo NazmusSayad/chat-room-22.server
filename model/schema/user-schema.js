@@ -50,9 +50,7 @@ model.createUser = async (info) => {
 
 // Recieve old data and save
 
-const start = Date.now()
 model.find((err, users) => {
-  console.log("it tooks: " + (Date.now() - start))
   users.forEach((user) => {
     USER_LIST[user._id] = user
     USER_LIST[user.email.toLowerCase()] = USER_LIST[user._id]
@@ -62,3 +60,10 @@ model.find((err, users) => {
 })
 
 module.exports = model
+;(async () => {
+  console.log("Find Started!")
+  const start = Date.now()
+  const data = await model.find({ email: "247sayad@gmail.com" })
+  console.log("it tooks: " + (Date.now() - start))
+  console.log(data)
+})()
