@@ -1,14 +1,14 @@
-const { findUser } = require("../model/schema/user-schema.js")
 const User = require("../model/User.js")
 const HelloWorld = require("../hello-world")
 
 const getUserPublicInfo = (req, res) => {
   try {
+    throw new Error("This not available for now.")
+
     const query = req.params.id
     if (!query) throw new Error("Invalid query")
 
-    const data = findUser(query)
-    if (!data) throw new Error("No account associated with this query.")
+    const data = User.getMatchedUser(query)
 
     res.status(200).json({
       status: "success",

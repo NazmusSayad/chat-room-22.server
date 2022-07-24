@@ -6,12 +6,12 @@ const newUser = async (body) => {
   return data
 }
 
-const getMatchedUser = (email, password) => {
-  email = email.toLowerCase()
+const getMatchedUser = (query, password) => {
+  query = query.toLowerCase()
 
-  if (!email || !password) throw new Error("Wrong input!")
+  if (!query || !password) throw new Error("Wrong input!")
 
-  const userMatch = Model.findUser(email)
+  const userMatch = Model.findUser(query)
   if (!userMatch) {
     throw new Error("No account associated with this email.")
   }
