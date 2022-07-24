@@ -4,7 +4,7 @@ const { RESPONSE_LIMIT, RESPONSE_LIMIT_OLD } = require("../.config.js")
 
 const addNameToMessages = (messages) => {
   messages.forEach((msg) => {
-    msg._doc.name = User.getUserName(msg.email).name
+    msg._doc.name = User.getUserName(msg.email)
   })
   return messages
 }
