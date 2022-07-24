@@ -52,12 +52,12 @@ model.createUser = async (info) => {
 
 const start = Date.now()
 model.find((err, users) => {
+  console.log("it tooks: " + (Date.now() - start))
   users.forEach((user) => {
     USER_LIST[user._id] = user
     USER_LIST[user.email.toLowerCase()] = USER_LIST[user._id]
   })
 
-  console.log("it tooks: " + (Date.now() - start))
   console.log(">>> User list loaded...")
 })
 
