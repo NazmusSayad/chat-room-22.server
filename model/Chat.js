@@ -1,50 +1,38 @@
-const Model = require("./schema/chat-schema.js")
-const { findUser } = require("./schema/user-schema.js")
+const Schema = require("./schema/chat-schema.js")
+const User = require("./User.js")
 const { RESPONSE_LIMIT, RESPONSE_LIMIT_OLD } = require("../.config.js")
 
-const getLastMessages = async () => {
-  const data = await Model.find().sort({ _id: -1 }).limit(RESPONSE_LIMIT)
-
-  data.forEach((msg) => {
-    msg._doc.name = findUser(msg.email).name
+const addNameToMessages = (messages) => {
+  messages.forEach((msg) => {
+    msg._doc.name = User.getUserName(msg.email).name
   })
+  return messages
+}
 
-  return data
+const getLastMessages = async () => {
+  const data = await Schema.find().sort({ _id: -1 }).limit(RESPONSE_LIMIT)
+  return addNameToMessages(data)
 }
 
 const getOlderMessagesThanId = async (id) => {
-  const data = await Model.find({ _id: { $lt: id } })
+  const data = await Schema.find({ _id: { $lt: id } })
     .limit(RESPONSE_LIMIT_OLD)
     .sort({ _id: -1 })
-  data.forEach((msg) => {
-    msg._doc.name = findUser(msg.email).name
-  })
-
-  return data
+  return addNameToMessages(data)
 }
 
 const getNewerMessagesThanId = async (id) => {
-  const data = await Model.find({ _id: { $gt: id } }).sort({ _id: 1 })
-  data.forEach((msg) => {
-    msg._doc.name = findUser(msg.email).name
-  })
-
-  return data
+  const data = await Schema.find({ _id: { $gt: id } }).sort({ _id: 1 })
+  return addNameToMessages(data)
 }
 
 const writeMessage = async (email, msgs) => {
-  const userName = findUser(email).name
-
   const list = msgs.map((msg) => {
     return { sent: new Date(), email, msg }
   })
 
-  const data = await Model.create(list)
-  data.forEach((single) => {
-    single._doc.name = userName
-  })
-
-  return data
+  const data = await Schema.create(list)
+  return addNameToMessages(data)
 }
 
 module.exports = {

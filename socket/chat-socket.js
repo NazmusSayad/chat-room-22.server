@@ -1,5 +1,4 @@
 const Chat = require("../model/Chat.js")
-const User = require("../model/User.js")
 
 module.exports = class Client {
   #io = null
@@ -12,26 +11,18 @@ module.exports = class Client {
     dateJoin: null,
   }
 
-  constructor(io, socket) {
+  constructor(io, socket, user) {
     this.#io = io
     this.#socket = socket
+    this.#user = user
 
-    try {
-      this.#user = User.getMatchedUser(
-        socket?.handshake?.auth?.email,
-        socket?.handshake?.auth?.password
-      )
+    console.log(`---> Connected with "${user.email}" from "${socket.handshake.address}"`)
 
-      console.log(`---> Connected with "${this.#user.email}" from "${socket.handshake.address}"`)
-
-      socket.on("message-initial", this.#sendInitialMessages)
-      socket.on("message-getOlder", this.#getOlderMessagesThanId)
-      socket.on("message-getNewer", this.#getNewerMessagesThanId)
-      socket.on("message-new", this.#writeNewMessage)
-      socket.on("disconnect", this.#onDisconnect)
-    } catch (err) {
-      this.#disconnect()
-    }
+    socket.on("message-initial", this.#sendInitialMessages)
+    socket.on("message-getOlder", this.#getOlderMessagesThanId)
+    socket.on("message-getNewer", this.#getNewerMessagesThanId)
+    socket.on("message-new", this.#writeNewMessage)
+    socket.on("disconnect", this.#onDisconnect)
   }
 
   #sendInitialMessages = async (respond) => {

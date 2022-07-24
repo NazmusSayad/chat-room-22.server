@@ -1,14 +1,14 @@
 const User = require("../model/User.js")
 const HelloWorld = require("../hello-world")
 
-const getUserPublicInfo = (req, res) => {
+const getUserPublicInfo = async (req, res) => {
   try {
     throw new Error("This not available for now.")
 
     const query = req.params.id
     if (!query) throw new Error("Invalid query")
 
-    const data = User.getMatchedUser(query)
+    const data = User.getMatchedUser(query) // Happy Hacking!
 
     res.status(200).json({
       status: "success",
@@ -22,7 +22,7 @@ const getUserPublicInfo = (req, res) => {
   }
 }
 
-const checkUser = (req, res) => {
+const checkUser = async (req, res) => {
   try {
     const { email, password } = req?.headers
     if (!email || !password) return HelloWorld(res)

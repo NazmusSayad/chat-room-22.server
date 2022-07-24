@@ -35,8 +35,9 @@ const Schema = new mongoose.Schema(
   }
 )
 
-// Add new model methods
 const model = mongoose.model("User", Schema)
+
+// Add new model methods
 model.findUser = (query) => USER_LIST[query.toLowerCase()]
 model.createUser = async (info) => {
   const data = await model.create({
@@ -49,22 +50,14 @@ model.createUser = async (info) => {
 }
 
 // Recieve old data and save
-
 model.find((err, users) => {
   users.forEach((user) => {
     USER_LIST[user._id] = user
     USER_LIST[user.email.toLowerCase()] = USER_LIST[user._id]
   })
 
+  model._userListLoaded = true
   console.log(">>> User list loaded...")
 })
 
 module.exports = model
-
-setTimeout(async () => {
-  console.log("Find Started!")
-  const start = Date.now()
-  const data = await model.find({ email: "247sayad@gmail.com" })
-  console.log("it tooks: " + (Date.now() - start))
-  console.log(data)
-}, 10000)
