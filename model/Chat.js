@@ -26,6 +26,14 @@ const getNewerMessagesThanId = async (id) => {
   return addNameToMessages(data)
 }
 
+const deleteMessage = async (email, id) => {
+  const data = await Schema.findById(id)
+  if (data.email !== email) throw new Error("Wrong user!")
+
+  await data.delete()
+  return true
+}
+
 const writeMessage = async (email, msgs) => {
   const list = msgs.map((msg) => {
     return { sent: new Date(), email, msg }
@@ -39,5 +47,6 @@ module.exports = {
   getLastMessages,
   getOlderMessagesThanId,
   getNewerMessagesThanId,
+  deleteMessage,
   writeMessage,
 }

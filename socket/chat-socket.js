@@ -21,6 +21,7 @@ module.exports = class Client {
     socket.on("message-initial", this.#sendInitialMessages)
     socket.on("message-getOlder", this.#getOlderMessagesThanId)
     socket.on("message-getNewer", this.#getNewerMessagesThanId)
+    socket.on("message-delete", this.#deleteMessage)
     socket.on("message-new", this.#writeNewMessage)
     socket.on("disconnect", this.#onDisconnect)
   }
@@ -48,6 +49,16 @@ module.exports = class Client {
       const data = await Chat.getNewerMessagesThanId(id)
       if (data.length > 100) return respond(data.length)
       respond(data)
+    } catch (err) {
+      this.#disconnect(err)
+    }
+  }
+
+  #deleteMessage = async (id, respond) => {
+    try {
+      await Chat.deleteMessage(this.#user.email, id)
+      this.#socket.broadcast.emit("message-delete", id)
+      respond(true)
     } catch (err) {
       this.#disconnect(err)
     }
