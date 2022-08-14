@@ -1,4 +1,4 @@
-const Chat = require("../model/Chat.js")
+const Chat = require('../model/Chat.js')
 
 module.exports = class Client {
   #io = null
@@ -16,17 +16,19 @@ module.exports = class Client {
     this.#socket = socket
     this.#user = user
 
-    console.log(`---> Connected with "${user.email}" from "${socket.handshake.address}"`)
+    console.log(
+      `---> Connected with "${user.email}" from "${socket.handshake.address}"`
+    )
 
-    socket.on("message-initial", this.#sendInitialMessages)
-    socket.on("message-getOlder", this.#getOlderMessagesThanId)
-    socket.on("message-getNewer", this.#getNewerMessagesThanId)
-    socket.on("message-delete", this.#deleteMessage)
-    socket.on("message-new", this.#writeNewMessage)
-    socket.on("disconnect", this.#onDisconnect)
+    socket.on('message-initial', this.#sendInitialMessages)
+    socket.on('message-getOlder', this.#getOlderMessagesThanId)
+    socket.on('message-getNewer', this.#getNewerMessagesThanId)
+    socket.on('message-delete', this.#deleteMessage)
+    socket.on('message-new', this.#writeNewMessage)
+    socket.on('disconnect', this.#onDisconnect)
   }
 
-  #sendInitialMessages = async (respond) => {
+  #sendInitialMessages = async respond => {
     try {
       const data = await Chat.getLastMessages()
       respond(data)
@@ -44,6 +46,7 @@ module.exports = class Client {
     }
   }
 
+  // HACK:BUG: Refactor this...
   #getNewerMessagesThanId = async (id, respond) => {
     try {
       const data = await Chat.getNewerMessagesThanId(id)
@@ -57,8 +60,8 @@ module.exports = class Client {
   #deleteMessage = async (id, respond) => {
     try {
       await Chat.deleteMessage(this.#user.email, id)
-      this.#socket.broadcast.emit("message-delete", id)
       respond(true)
+      this.#socket.broadcast.emit('message-delete', id)
     } catch (err) {
       this.#disconnect(err)
     }
@@ -67,15 +70,15 @@ module.exports = class Client {
   #writeNewMessage = async (msgs, respond) => {
     try {
       const data = await Chat.writeMessage(this.#user.email, msgs)
-      this.#socket.broadcast.emit("message-new", data)
       respond(data)
+      this.#socket.broadcast.emit('message-new', data)
     } catch (err) {
       this.#disconnect(err)
     }
   }
 
-  #disconnect = async (err = new Error("Something went wrong!")) => {
-    this.#socket.emit("error", err.message)
+  #disconnect = async (err = new Error('Something went wrong!')) => {
+    this.#socket.emit('error', err.message)
     this.#socket.disconnect(true)
   }
 
