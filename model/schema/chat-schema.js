@@ -1,13 +1,19 @@
-const emailSchema = require("./user-schema.js").schema.obj.email
-const mongoose = require("mongoose")
+const emailSchema = require('./user-schema.js').schema.obj.email
+const mongoose = require('mongoose')
 
 const Schema = new mongoose.Schema(
   {
     msg: {
       type: String,
-      required: [true, "Message feild missing"],
+      required: [true, 'Message feild missing'],
       trim: true,
     },
+    files: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
     email: {
       ...emailSchema,
       unique: false,
@@ -22,4 +28,4 @@ const Schema = new mongoose.Schema(
   }
 )
 
-module.exports = mongoose.model("Chat", Schema)
+module.exports = mongoose.model('Chat', Schema)
