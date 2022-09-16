@@ -36,6 +36,10 @@ const deleteMessage = async (email, id) => {
 
 const writeMessage = async (email, msgs) => {
   const list = msgs.map(msg => {
+    if (!(msg.msg || msg.files.length)) {
+      throw new Error('Invalid message')
+    }
+
     return {
       sent: new Date(),
       email,

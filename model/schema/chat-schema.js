@@ -5,7 +5,6 @@ const Schema = new mongoose.Schema(
   {
     msg: {
       type: String,
-      required: [true, 'Message feild missing'],
       trim: true,
     },
     files: [

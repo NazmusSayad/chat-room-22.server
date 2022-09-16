@@ -73,6 +73,7 @@ module.exports = class Client {
       respond(data)
       this.#socket.broadcast.emit('message-new', data)
     } catch (err) {
+      console.log(err)
       this.#disconnect(err)
     }
   }
