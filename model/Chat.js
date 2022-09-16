@@ -1,6 +1,13 @@
+const cloudinary = require('cloudinary')
 const Schema = require('./schema/chat-schema.js')
 const User = require('./User.js')
 const { RESPONSE_LIMIT, RESPONSE_LIMIT_OLD } = require('../.config.js')
+
+cloudinary.v2.config({
+  cloud_name: process.env.C_COULD_NAME,
+  api_secret: process.env.C_API_SECRET,
+  api_key: process.env.C_API_KEY,
+})
 
 const addNameToMessages = messages => {
   messages.forEach(msg => {
@@ -30,7 +37,16 @@ const deleteMessage = async (email, id) => {
   const data = await Schema.findById(id)
   if (data.email !== email) throw new Error('Wrong user!')
 
-  await data.delete()
+  const filesPublicId = data.files.map(file => {
+    return file.split('/').at(-1).match(/^\w*/)[0]
+  })
+
+  const deletionPromises = [data.delete()]
+  if (filesPublicId.length) {
+    deletionPromises.push(cloudinary.v2.api.delete_resources(filesPublicId))
+  }
+
+  await Promise.all(deletionPromises)
   return true
 }
 
